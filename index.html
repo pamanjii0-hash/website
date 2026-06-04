@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANJII OFFICIAL - Pusat Penjualan Premium</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Variables for Dynamic Themes */
+        :root {
+            --accent-rose: #ff2a5f;
+            --accent-ocean: #00b4d8;
+            --accent-emerald: #00f5d4;
+            --accent-sun: #ffb703;
+            
+            --accent: var(--accent-rose);
+            --accent-rgb: 255, 42, 95;
+            --bg-main: #0a0a0c;
+            --bg-card: rgba(20, 20, 25, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #a0a0ab;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% -20%, rgba(var(--accent-rgb), 0.15), transparent 60%);
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #050507;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.4s ease, visibility 0.4s;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(var(--accent-rgb), 0.1);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Navbar & Header */
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 18px 24px;
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .brand i {
+            color: var(--accent);
+            text-shadow: 0 0 12px rgba(var(--accent-rgb), 0.5);
+        }
+        .nav-actions {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+        .nav-icon {
+            font-size: 18px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+        }
+        .nav-icon:hover { color: var(--accent); }
+
+        /* Navigation Menu Container */
+        .main-container {
+            padding-top: 85px;
+            padding-bottom: 40px;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* App View/Pages */
+        .app-page {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        .app-page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Glassmorphism Unified Cards & Buttons */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .hero-logo-wrapper {
+            text-align: center;
+            margin: 20px 0 30px;
+        }
+        .hero-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            background: rgba(0,0,0,0.4);
+        }
+        .hero-logo i { font-size: 45px; color: var(--accent); }
+
+        .btn-transparent {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-transparent:hover, .btn-transparent.active {
+            background: rgba(var(--accent-rgb), 0.15);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.2);
+        }
+        .btn-accent {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent);
+            border: none;
+            color: #000;
+            font-weight: 700;
+            font-size: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.4);
+            transition: all 0.3s;
+        }
+        .btn-accent:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Social Link Grid */
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .social-btn {
+            padding: 12px 6px;
+            font-size: 12px;
+            border-radius: 10px;
+        }
+
+        /* Stats Section */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .stat-item h3 { font-size: 18px; color: var(--accent); margin-bottom: 4px; }
+        .stat-item p { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Settings Modal-like Popover */
+        .settings-popup {
+            position: fixed;
+            top: 75px; right: 20px;
+            width: 280px;
+            background: rgba(15, 15, 20, 0.95);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            z-index: 200;
+            display: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .settings-popup.active { display: block; }
+        .settings-title { font-size: 13px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; font-weight: 600;}
+        .color-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+        .color-dot {
+            padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);
+            cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 12px; background: rgba(255,255,255,0.02);
+        }
+        .color-dot span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+        /* Sidebar Navigation Drawer */
+        .sidebar {
+            position: fixed;
+            top: 0; right: -100%; width: 280px; height: 100%;
+            background: rgba(10, 10, 12, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid var(--border-color);
+            z-index: 300;
+            padding: 30px 24px;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sidebar.active { right: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .sidebar-menu { list-style: none; }
+        .sidebar-item {
+            padding: 14px 16px; margin-bottom: 8px; border-radius: 10px;
+            cursor: pointer; display: flex; align-items: center; gap: 14px; font-weight: 500; color: var(--text-muted); transition: all 0.2s;
+        }
+        .sidebar-item:hover, .sidebar-item.active { color: #fff; background: rgba(var(--accent-rgb), 0.1); }
+        .sidebar-item i { width: 20px; font-size: 16px; color: var(--accent); }
+
+        /* Overlay */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 250; display: none;
+        }
+        .overlay.active { display: block; }
+
+        /* Product Cards */
+        .product-card {
+            background: rgba(255,255,255,0.01);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+        .product-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .product-title { font-weight: 700; font-size: 16px; }
+        .product-price { color: var(--accent); font-weight: 700; font-size: 15px; }
+        .product-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
+
+        /* Live Chat Elements */
+        .chat-box { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border-color); }
+        .chat-msg { margin-bottom: 10px; max-width: 85%; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
+        .chat-msg.user { background: var(--accent); color: #000; margin-left: auto; border-bottom-right-radius: 2px; font-weight: 500; }
+        .chat-msg.admin { background: rgba(255,255,255,0.08); color: #fff; border-bottom-left-radius: 2px; }
+
+        /* Checkout Steps & Alerts */
+        .qris-box { text-align: center; margin: 15px 0; background: #fff; padding: 12px; border-radius: 12px; display: inline-block; width: 100%; }
+        .qris-box img { max-width: 200px; height: auto; }
+        .badge-status { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .badge-pending { background: rgba(255,183,3,0.15); color: var(--accent-sun); border: 1px solid var(--accent-sun); }
+        .badge-done { background: rgba(0,245,212,0.15); color: var(--accent-emerald); border: 1px solid var(--accent-emerald); }
+
+        /* Admin Table styling */
+        .admin-table-wrapper { overflow-x: auto; margin-top: 15px; }
+        .admin-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
+        .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid var(--border-color); }
+        .admin-table th { color: var(--text-muted); font-weight: 600; }
+        
+        .announcement-item { border-left: 3px solid var(--accent); padding-left: 12px; margin-bottom: 16px; }
+        .announcement-item h4 { font-size: 14px; margin-bottom: 4px; }
+        .announcement-item p { font-size: 12px; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p style="font-size: 12px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; color: var(--text-muted);">Loading System...</p>
+    </div>
+
+    <!-- Top Navigation Header -->
+    <header>
+        <div class="brand">
+            <i class="fa-solid var-logo fa-cube"></i> <span id="header-title">MANJII OFFICIAL</span>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-icon" onclick="toggleSettings()"><i class="fa-solid fa-gear"></i></button>
+            <button class="nav-icon" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </header>
+
+    <!-- Customizer Popup -->
+    <div class="settings-popup" id="settingsPopup">
+        <div class="settings-title">Language / Bahasa</div>
+        <div class="color-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
+            <button class="btn-transparent active" id="lang-id" onclick="setLanguage('id')">Indonesia</button>
+            <button class="btn-transparent" id="lang-en" onclick="setLanguage('en')">English</button>
+        </div>
+        <div class="settings-title">Accent Color</div>
+        <div class="color-grid">
+            <div class="color-dot" onclick="changeAccent('rose')"><span style="background: var(--accent-rose)"></span>Rose</div>
+            <div class="color-dot" onclick="changeAccent('ocean')"><span style="background: var(--accent-ocean)"></span>Ocean</div>
+            <div class="color-dot" onclick="changeAccent('emerald')"><span style="background: var(--accent-emerald)"></span>Emerald</div>
+            <div class="color-dot" onclick="changeAccent('sun')"><span style="background: var(--accent-sun)"></span>Sun</div>
+        </div>
+    </div>
+
+    <!-- Right Sidebar Drawer -->
+    <div class="overlay" id="overlay" onclick="closeAllDrawers()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight:600;" id="side-status-lbl">Account Status</span>
+            <button class="nav-icon" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div style="margin-bottom: 24px; font-weight: 700; font-size: 16px; color: var(--accent);" id="side-username">GUEST MODE</div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-item active" onclick="navigateTo('home')"><i class="fa-solid fa-house"></i> Home</li>
+            <li class="sidebar-item" onclick="navigateTo('catalog')"><i class="fa-solid fa-boxes-stacked"></i> Product Catalog</li>
+            <li class="sidebar-item" id="nav-chat-item" onclick="navigateTo('chat')"><i class="fa-solid fa-comments"></i> Chat Admin</li>
+            <li class="sidebar-item" id="nav-history-item" onclick="navigateTo('history')"><i class="fa-solid fa-clock-rotate-left"></i> Transaction History</li>
+            <li class="sidebar-item" onclick="window.open('https://wa.me/6283845203074')"><i class="fa-brands fa-whatsapp"></i> WhatsApp Dev</li>
+            <li class="sidebar-item" id="auth-sidebar-btn" onclick="navigateTo('login')"><i class="fa-solid fa-right-to-bracket"></i> Login / Register</li>
+            <li class="sidebar-item" id="admin-panel-btn" onclick="navigateTo('admin-login')"><i class="fa-solid fa-shield-halved"></i> Admin Panel</li>
+        </ul>
+    </div>
+
+    <!-- Main Content Container Wrapper -->
+    <div class="main-container">
+
+        <!-- 1. HOME PAGE -->
+        <div id="page-home" class="app-page active">
+            <div class="hero-logo-wrapper">
+                <div class="hero-logo"><i class="fa-solid fa-cube" id="main-logo-icon"></i></div>
+                <h1 style="font-size: 24px; font-weight: 800; margin-bottom: 8px;" id="hero-title">MANJII OFFICIAL</h1>
+                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;" id="hero-desc">Pusat penjualan produk premium dengan keamanan super tinggi. Tersertifikasi aman 99%.</p>
+            </div>
+
+            <!-- Fast Connect Actions -->
+            <div class="social-grid">
+                <button class="btn-transparent social-btn" onclick="navigateTo('chat')"><i class="fa-solid fa-headset" style="color:#ff2a5f"></i> CS Live Chat</button>
+                <button class="btn-transparent social-btn" onclick="window.open('https://wa.me/6283845203074')"><i class="fa-brands fa-whatsapp" style="color:#25d366"></i> WhatsApp</button>
+                <button class="btn-transparent social-btn" onclick="window.open('https://tiktok.com')"><i class="fa-brands fa-tiktok"></i> TikTok</button>
+            </div>
+
+            <!-- Live Platform Stats -->
+            <div class="glass-card stats-container">
+                <div class="stat-item"><h3>5K+</h3><p>Active Users</p></div>
+                <div class="stat-item"><h3>99%</h3><p>Security</p></div>
+                <div class="stat-item"><h3>24/7</h3><p>Service</p></div>
+            </div>
+
+            <button class="btn-accent" onclick="navigateTo('catalog')" id="btn-view-catalog">VIEW PRODUCT CATALOG</button>
+
+            <!-- News & Announcements inside Home -->
+            <div class="glass-card" style="margin-top: 25px;">
+                <h3 style="font-size: 15px; margin-bottom: 16px; font-weight: 700;" id="title-news"><i class="fa-solid fa-bullhorn" style="color: var(--accent);"></i> News & Updates</h3>
+                <div id="news-container">
+                    <!-- Dynamic Announcements -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. CATALOG PAGE -->
+        <div id="page-catalog" class="app-page">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;" id="cat-title">Product Catalog</h2>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;" id="cat-subtitle">Pilih produk premium terbaik kebutuhan Anda.</p>
+            <div id="catalog-list">
+                <!-- Products loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- 3. CHECKOUT VIEW -->
+        <div id="page-checkout" class="app-page">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px;"><i class="fa-solid fa-wallet" style="color:var(--accent)"></i> Checkout Process</h2>
+            <div class="glass-card">
+                <h3 id="checkout-prod-name" style="font-size: 16px; margin-bottom: 4px;">Product Name</h3>
+                <p id="checkout-prod-price" style="color: var(--accent); font-weight: 700; font-size: 16px; margin-bottom: 20px;">Rp 0</p>
+
+                <form id="checkout-form" onsubmit="handleCheckoutSubmit(event)">
+                    <div class="form-group">
+                        <label>Username Player / Akun</label>
+                        <input type="text" class="form-control" id="checkout-user" required placeholder="Contoh: ManjiiGamer">
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor WhatsApp Aktif</label>
+                        <input type="tel" class="form-control" id="checkout-wa" required placeholder="Contoh: 083845203074">
+                    </div>
+                    <button type="submit" class="btn-accent" style="margin-top: 10px;">PROCEED TO PAYMENT</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 4. PAYMENT GATEWAY (QRIS) -->
+        <div id="page-payment" class="app-page">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px; text-align:center;">QRIS All Payment</h2>
+            <div class="glass-card" style="text-align: center;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Silahkan scan QRIS di bawah ini untuk menyelesaikan pembayaran otomatis Anda:</p>
+                <div class="qris-box">
+                    <!-- Default back up if image is not uploaded -->
+                    <img src="qris.png" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ManjiiOfficialQRIS'" alt="QRIS ALL PAY">
+                </div>
+                <p style="font-size: 12px; font-weight:600; margin-top: 10px; color: var(--accent-sun);"><i class="fa-solid fa-circle-notch fa-spin"></i> Menunggu Konfirmasi Admin...</p>
+                <button class="btn-transparent" style="margin-top: 24px;" onclick="navigateTo('history')">LIHAT STATUS TRANSAKSI</button>
+            </div>
+        </div>
+
+        <!-- 5. TRANSACTION HISTORY -->
+        <div id="page-history" class="app-page">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">Riwayat Transaksi</h2>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Pantau terus status invoice pesanan premium Anda.</p>
+            <div id="history-list">
+                <!-- Transaction Items -->
+            </div>
+        </div>
+
+        <!-- 6. USER LIVE CHAT -->
+        <div id="page-chat" class="app-page">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">CS Live Chat</h2>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Hubungi tim bantuan support kami langsung dari platform.</p>
+            <div class="glass-card" style="padding: 16px;">
+                <div class="chat-box" id="user-chat-box"></div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="user-chat-input" class="form-control" placeholder="Ketik pesan di sini...">
+                    <button class="btn-accent" style="width: 60px; padding: 0;" onclick="sendUserMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. AUTHENTICATION (LOGIN/REGISTER) -->
+        <div id="page-login" class="app-page">
+            <div class="glass-card">
+                <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px; text-align: center;" id="auth-title">Login Account</h2>
+                <form id="login-form" onsubmit="handleAuth(event)">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" class="form-control" id="auth-user" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control" id="auth-pass" required>
+                    </div>
+                    <button type="submit" class="btn-accent" style="margin-top: 10px;" id="auth-submit-btn">MASUK AKUN</button>
+                </form>
+                <p style="font-size: 12px; text-align: center; margin-top: 20px; color: var(--text-muted);" id="auth-toggle-msg">
+                    Belum punya akun? <a href="#" onclick="toggleAuthMode(true)" style="color: var(--accent); text-decoration: none; font-weight: 600;">Daftar Sekarang</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- 8. ADMIN LOGIN -->
+        <div id="page-admin-login" class="app-page">
+            <div class="glass-card">
+                <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 20px; text-align: center; text-transform: uppercase; letter-spacing: 1px;"><i class="fa-solid fa-lock" style="color: var(--accent);"></i> System Login Admin</h2>
+                <form onsubmit="handleAdminLogin(event)">
+                    <div class="form-group">
+                        <label>Username Admin</label>
+                        <input type="text" class="form-control" id="admin-user-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password Admin</label>
+                        <input type="password" class="form-control" id="admin-pass-input" required>
+                    </div>
+                    <button type="submit" class="btn-accent" style="margin-top: 10px;">MASUK PANEL</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 9. ADMIN PANEL DASHBOARD -->
+        <div id="page-admin-dashboard" class="app-page">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <h2 style="font-size: 20px; font-weight: 800;"><i class="fa-solid fa-chart-line"></i> Dashboard Admin</h2>
+                <button class="btn-transparent" style="padding: 6px 12px; font-size:12px; width:auto;" onclick="logoutAdmin()">Keluar Panel</button>
+            </div>
+
+            <!-- Tabs Menu for Admin -->
+            <div class="color-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 15px;">
+                <button class="btn-transparent active" id="tab-btn-orders" onclick="switchAdminTab('orders')">Orders</button>
+                <button class="btn-transparent" id="tab-btn-products" onclick="switchAdminTab('products')">Products</button>
+                <button class="btn-transparent" id="tab-btn-sys" onclick="switchAdminTab('sys')">System</button>
+            </div>
+
+            <!-- TAB 1: ORDER MANAGEMENT -->
+            <div id="admin-tab-orders" class="admin-tab-content">
+                <div class="glass-card" style="padding: 14px;">
+                    <h3>Daftar Transaksi Pelanggan</h3>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Produk</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-orders-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Admin Chat Workspace -->
+                <div class="glass-card" style="padding: 14px; margin-top: 20px;">
+                    <h3>Live Chat Workspace</h3>
+                    <div class="form-group" style="margin-top: 12px;">
+                        <label>Pilih Akun User</label>
+                        <select class="form-control" id="admin-chat-select" onchange="loadAdminChat()"></select>
+                    </div>
+                    <div class="chat-box" id="admin-chat-box"></div>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="admin-chat-input" class="form-control" placeholder="Ketik balasan admin...">
+                        <button class="btn-accent" style="width: 60px; padding: 0;" onclick="sendAdminMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: PRODUCT CATALOG MANAGEMENT -->
+            <div id="admin-tab-products" class="admin-tab-content" style="display: none;">
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 14px;">Tambah / Update Produk</h3>
+                    <input type="hidden" id="edit-prod-id">
+                    <div class="form-group">
+                        <label>Nama Produk</label>
+                        <input type="text" id="prod-name-input" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Harga (IDR)</label>
+                        <input type="number" id="prod-price-input" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi Fitur / Spesifikasi</label>
+                        <textarea id="prod-desc-input" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div style="display:flex; gap: 10px;">
+                        <button class="btn-accent" onclick="saveProduct()">Simpan Produk</button>
+                        <button class="btn-transparent" onclick="clearProductForm()">Reset</button>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="padding: 14px;">
+                    <h3>Manajemen Produk</h3>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Harga</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-products-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: SYSTEM CONFIG & NEWS -->
+            <div id="admin-tab-sys" class="admin-tab-content" style="display: none;">
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 14px;">Update Info Website</h3>
+                    <div class="form-group">
+                        <label>Nama Website</label>
+                        <input type="text" id="sys-title-input" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi Website</label>
+                        <textarea id="sys-desc-input" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button class="btn-accent" onclick="saveSystemConfig()">Update Pengaturan</button>
+                </div>
+
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 14px;">Tambah Pengumuman / News</h3>
+                    <div class="form-group">
+                        <label>Judul Pengumuman</label>
+                        <input type="text" id="news-title-input" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Isi Berita</label>
+                        <textarea id="news-desc-input" class="form-control" rows="2"></textarea>
+                    </div>
+                    <button class="btn-accent" onclick="addNews()">Publish News</button>
+                </div>
+                
+                <div class="glass-card" style="padding: 14px;">
+                    <h3>Database Akun User Terdaftar</h3>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Password Saved</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Core Database Logic Script -->
+    <script>
+        // High Security Hardcoded Admin Access Coordinates requested
+        const ADMIN_COORDINATES = {
+            user: "manjii_x_secure_panel_99",
+            pass: "mNj!!_0ff1c1@l_sEcUrE_k3y_2026_#"
+        };
+
+        // Application State Management Sync via LocalStorage (Simulated database.json update logic via state engine)
+        let state = {
+            config: { title: "MANJII OFFICIAL", desc: "Pusat penjualan produk cheat manjii ios dengan keamanan super tinggi. Tersertifikasi aman 99%." },
+            products: [
+                { id: 1, name: "MANJII ANDROID PRO", price: 100000, desc: "Aimbot ESP, Bypass Anti-Cheat, High Damage Mod, Auto Headshot, No Recoil, Safe 99%" },
+                { id: 2, name: "MANJII PC / LAPTOP VIP", price: 150000, desc: "Memory Hack, Wallhack, Anti-Ban Module, Streamproof Tech, Custom Skin Injector" }
+            ],
+            news: [
+                { id: 1, title: "Update V1.4 Aman 100%", desc: "Seluruh sistem bypass anti-cheat baru telah sukses terimplementasi pada server cloud." }
+            ],
+            orders: [],
+            users: {},
+            chats: {},
+            currentUser: null,
+            currentLang: 'id',
+            selectedProduct: null
+        };
+
+        // Initialize Database
+        function initStorage() {
+            const saved = localStorage.getItem("manjii_db");
+            if (saved) {
+                state = JSON.parse(saved);
+            } else {
+                saveToStorage();
+            }
+        }
+        function saveToStorage() {
+            localStorage.setItem("manjii_db", JSON.stringify(state));
+        }
+
+        // Action Loaders
+        function showLoading(callback) {
+            const ls = document.getElementById("loading-screen");
+            ls.style.opacity = "1";
+            ls.style.visibility = "visible";
+            setTimeout(() => {
+                if(callback) callback();
+                ls.style.opacity = "0";
+                ls.style.visibility = "hidden";
+            }, 500);
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            initStorage();
+            applySystemConfig();
+            renderCatalog();
+            renderNews();
+            updateAuthUI();
+            showLoading();
+        });
+
+        function applySystemConfig() {
+            document.title = state.config.title;
+            document.getElementById("header-title").innerText = state.config.title;
+            document.getElementById("hero-title").innerText = state.config.title;
+            document.getElementById("hero-desc").innerText = state.config.desc;
+            document.getElementById("sys-title-input").value = state.config.title;
+            document.getElementById("sys-desc-input").value = state.config.desc;
+        }
+
+        // Accent Colors Engine
+        function changeAccent(theme) {
+            const root = document.documentElement;
+            if (theme === 'rose') {
+                root.style.setProperty('--accent', 'var(--accent-rose)');
+                root.style.setProperty('--accent-rgb', '255, 42, 95');
+            } else if (theme === 'ocean') {
+                root.style.setProperty('--accent', 'var(--accent-ocean)');
+                root.style.setProperty('--accent-rgb', '0, 180, 216');
+            } else if (theme === 'emerald') {
+                root.style.setProperty('--accent', 'var(--accent-emerald)');
+                root.style.setProperty('--accent-rgb', '0, 245, 212');
+            } else if (theme === 'sun') {
+                root.style.setProperty('--accent', 'var(--accent-sun)');
+                root.style.setProperty('--accent-rgb', '255, 183, 3');
+            }
+            toggleSettings();
+        }
+
+        // Drawers controllers
+        function toggleSettings() { document.getElementById("settingsPopup").classList.toggle("active"); }
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("active");
+            document.getElementById("overlay").classList.toggle("active");
+        }
+        function closeAllDrawers() {
+            document.getElementById("sidebar").classList.remove("active");
+            document.getElementById("settingsPopup").classList.remove("active");
+            document.getElementById("overlay").classList.remove("active");
+        }
+
+        // Page Router
+        function navigateTo(pageId) {
+            closeAllDrawers();
+            showLoading(() => {
+                document.querySelectorAll(".app-page").forEach(p => p.classList.remove("active"));
+                document.getElementById(`page-${pageId}`).classList.add("active");
+                
+                // Active link tracker style
+                document.querySelectorAll(".sidebar-item").forEach(item => item.classList.remove("active"));
+                
+                // Specific updates
+                if (pageId === 'history') renderHistory();
+                if (pageId === 'chat') { loadUserChat(); }
+                if (pageId === 'admin-dashboard') loadAdminDashboard();
+            });
+        }
+
+        // Render Functions
+        function renderCatalog() {
+            const list = document.getElementById("catalog-list");
+            list.innerHTML = "";
+            state.products.forEach(p => {
+                list.innerHTML += `
+                    <div class="product-card glass-card">
+                        <div class="product-header">
+                            <span class="product-title">${p.name}</span>
+                            <span class="product-price">Rp ${p.price.toLocaleString('id-ID')}</span>
+                        </div>
+                        <p class="product-desc">${p.desc}</p>
+                        <button class="btn-transparent" onclick="triggerCheckout(${p.id})"><i class="fa-solid fa-cart-shopping"></i> BELI SEKARANG</button>
+                    </div>
+                `;
+            });
+        }
+
+        function renderNews() {
+            const container = document.getElementById("news-container");
+            container.innerHTML = "";
+            if(state.news.length === 0) container.innerHTML = "<p style='font-size:12px; color:var(--text-muted);'>Belum ada pengumuman baru.</p>";
+            state.news.forEach(n => {
+                container.innerHTML += `
+                    <div class="announcement-item">
+                        <h4>${n.title}</h4>
+                        <p>${n.desc}</p>
+                    </div>
+                `;
+            });
+        }
+
+        // Authentication Engine
+        let isRegisterMode = false;
+        function toggleAuthMode(reg) {
+            isRegisterMode = reg;
+            document.getElementById("auth-title").innerText = reg ? "Daftar Akun Baru" : "Login Account";
+            document.getElementById("auth-submit-btn").innerText = reg ? "DAFTAR SEKARANG" : "MASUK AKUN";
+            document.getElementById("auth-toggle-msg").innerHTML = reg ? 
+                `Sudah punya akun? <a href="#" onclick="toggleAuthMode(false)" style="color: var(--accent); text-decoration:none; font-weight:600;">Login Sini</a>` :
+                `Belum punya akun? <a href="#" onclick="toggleAuthMode(true)" style="color: var(--accent); text-decoration:none; font-weight:600;">Daftar Sekarang</a>`;
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const u = document.getElementById("auth-user").value.trim();
+            const p = document.getElementById("auth-pass").value;
+
+            if(!u || !p) return;
+
+            if (isRegisterMode) {
+                if (state.users[u]) {
+                    alert("Username sudah terdaftar!");
+                    return;
+                }
+                state.users[u] = p;
+                state.chats[u] = [{ sender: 'admin', text: 'Halo! Selamat datang di Manjii Official. Silahkan tanyakan sesuatu.' }];
+                alert("Pendaftaran berhasil! Silahkan login.");
+                toggleAuthMode(false);
+            } else {
+                if (state.users[u] && state.users[u] === p) {
+                    state.currentUser = u;
+                    alert("Login Berhasil!");
+                    updateAuthUI();
+                    navigateTo('home');
+                } else {
+                    alert("Username atau Password salah!");
+                }
+            }
+            saveToStorage();
+        }
+
+        function updateAuthUI() {
+            const sideBtn = document.getElementById("auth-sidebar-btn");
+            if (state.currentUser) {
+                document.getElementById("side-status-lbl").innerText = "ACCOUNT ACTIVE";
+                document.getElementById("side-username").innerText = state.currentUser.toUpperCase();
+                sideBtn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> Logout`;
+                sideBtn.setAttribute("onclick", "handleLogout()");
+                document.getElementById("nav-chat-item").style.display = "flex";
+                document.getElementById("nav-history-item").style.display = "flex";
+            } else {
+                document.getElementById("side-status-lbl").innerText = "Account Status";
+                document.getElementById("side-username").innerText = "GUEST MODE";
+                sideBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Login / Register`;
+                sideBtn.setAttribute("onclick", "navigateTo('login')");
+                document.getElementById("nav-chat-item").style.display = "none";
+                document.getElementById("nav-history-item").style.display = "none";
+            }
+        }
+
+        function handleLogout() {
+            state.currentUser = null;
+            alert("Berhasil Logout.");
+            updateAuthUI();
+            navigateTo('home');
+        }
+
+        // Checkout & Transactions Core
+        function triggerCheckout(prodId) {
+            if(!state.currentUser) {
+                alert("Silahkan login atau daftarkan akun Anda terlebih dahulu untuk berbelanja.");
+                navigateTo('login');
+                return;
+            }
+            const p = state.products.find(prod => prod.id === prodId);
+            state.selectedProduct = p;
+            document.getElementById("checkout-prod-name").innerText = p.name;
+            document.getElementById("checkout-prod-price").innerText = `Rp ${p.price.toLocaleString('id-ID')}`;
+            navigateTo('checkout');
+        }
+
+        function handleCheckoutSubmit(e) {
+            e.preventDefault();
+            const playerUser = document.getElementById("checkout-user").value;
+            const waNum = document.getElementById("checkout-wa").value;
+
+            const newOrder = {
+                id: "INV-" + Date.now(),
+                user: state.currentUser,
+                playerUser: playerUser,
+                wa: waNum,
+                productName: state.selectedProduct.name,
+                price: state.selectedProduct.price,
+                status: "PENDING"
+            };
+
+            state.orders.push(newOrder);
+            saveToStorage();
+            navigateTo('payment');
+        }
+
+        function renderHistory() {
+            const list = document.getElementById("history-list");
+            list.innerHTML = "";
+            const myOrders = state.orders.filter(o => o.user === state.currentUser);
+            if (myOrders.length === 0) {
+                list.innerHTML = "<p style='font-size:12px; color:var(--text-muted);'>Belum ada riwayat transaksi.</p>";
+                return;
+            }
+            myOrders.forEach(o => {
+                const badge = o.status === 'DONE' ? 'badge-done' : 'badge-pending';
+                list.innerHTML += `
+                    <div class="glass-card" style="padding:16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <span style="font-size:12px; font-weight:700; color:var(--text-muted);">${o.id}</span>
+                            <span class="badge-status ${badge}">${o.status}</span>
+                        </div>
+                        <div style="font-weight:700; font-size:14px; margin-bottom:4px;">${o.productName}</div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">User Target: ${o.playerUser}</div>
+                        <div style="font-size:13px; color:var(--accent); font-weight:700;">Rp ${o.price.toLocaleString('id-ID')}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // Live Chat Engines
+        function loadUserChat() {
+            const box = document.getElementById("user-chat-box");
+            box.innerHTML = "";
+            if(!state.currentUser) return;
+            const history = state.chats[state.currentUser] || [];
+            history.forEach(m => {
+                const cls = m.sender === 'user' ? 'user' : 'admin';
+                box.innerHTML += `<div class="chat-msg ${cls}">${m.text}</div>`;
+            });
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function sendUserMessage() {
+            const inp = document.getElementById("user-chat-input");
+            const txt = inp.value.trim();
+            if(!txt || !state.currentUser) return;
+
+            if(!state.chats[state.currentUser]) state.chats[state.currentUser] = [];
+            state.chats[state.currentUser].push({ sender: 'user', text: txt });
+            inp.value = "";
+            saveToStorage();
+            loadUserChat();
+        }
+
+        // LANGUAGE SYSTEM DYNAMIC TRANSLATOR REQUEST
+        function setLanguage(lang) {
+            state.currentLang = lang;
+            document.querySelectorAll(".settings-popup .btn-transparent").forEach(b => b.classList.remove("active"));
+            document.getElementById(`lang-${lang}`).classList.add("active");
+            
+            if(lang === 'en') {
+                document.getElementById("btn-view-catalog").innerText = "VIEW PRODUCT CATALOG";
+                document.getElementById("title-news").innerHTML = `<i class="fa-solid fa-bullhorn" style="color: var(--accent);"></i> News & Updates`;
+                document.getElementById("cat-title").innerText = "Product Catalog";
+                document.getElementById("cat-subtitle").innerText = "Select our high end security assets.";
+            } else {
+                document.getElementById("btn-view-catalog").innerText = "VIEW PRODUCT CATALOG";
+                document.getElementById("title-news").innerHTML = `<i class="fa-solid fa-bullhorn" style="color: var(--accent);"></i> Berita & Pengumuman`;
+                document.getElementById("cat-title").innerText = "Katalog Produk";
+                document.getElementById("cat-subtitle").innerText = "Pilih produk premium terbaik kebutuhan Anda.";
+            }
+            toggleSettings();
+        }
+
+        // --- BACKEND ADMIN MANAGEMENT PANEL IMPLEMENTATION ---
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById("admin-user-input").value;
+            const p = document.getElementById("admin-pass-input").value;
+
+            if (u === ADMIN_COORDINATES.user && p === ADMIN_COORDINATES.pass) {
+                alert("Login Admin Terverifikasi!");
+                navigateTo('admin-dashboard');
+            } else {
+                alert("Akses Ditolak! Kunci koordinat salah.");
+            }
+        }
+
+        function logoutAdmin() {
+            alert("Keluar dari Admin Panel.");
+            navigateTo('home');
+        }
+
+        function switchAdminTab(tabName) {
+            document.querySelectorAll(".admin-tab-content").forEach(c => c.style.display = "none");
+            document.querySelectorAll("[id^='tab-btn-']").forEach(b => b.classList.remove("active"));
+            
+            document.getElementById(`admin-tab-${tabName}`).style.display = "block";
+            document.getElementById(`tab-btn-${tabName}`).classList.add("active");
+        }
+
+        function loadAdminDashboard() {
+            // Load orders table
+            const tbodyOrders = document.getElementById("admin-orders-table");
+            tbodyOrders.innerHTML = "";
+            state.orders.forEach(o => {
+                tbodyOrders.innerHTML += `
+                    <tr>
+                        <td><b>${o.user}</b><br><small>${o.wa}</small></td>
+                        <td>${o.productName}</td>
+                        <td><span class="badge-status ${o.status === 'DONE' ? 'badge-done' : 'badge-pending'}">${o.status}</span></td>
+                        <td>
+                            ${o.status === 'PENDING' ? `<button class="btn-accent" style="padding:4px 8px; font-size:10px; width:auto;" onclick="approveOrder('${o.id}')">ACC</button>` : `<span style="color:var(--accent-emerald)"><i class="fa-solid fa-check"></i> Success</span>`}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Load Chat dropdown selection users
+            const select = document.getElementById("admin-chat-select");
+            select.innerHTML = "<option value=''>-- Pilih User Chat --</option>";
+            Object.keys(state.chats).forEach(u => {
+                select.innerHTML += `<option value="${u}">${u}</option>`;
+            });
+
+            // Load products list manager
+            const tbodyProd = document.getElementById("admin-products-table");
+            tbodyProd.innerHTML = "";
+            state.products.forEach(p => {
+                tbodyProd.innerHTML += `
+                    <tr>
+                        <td>${p.name}</td>
+                        <td>Rp ${p.price.toLocaleString('id-ID')}</td>
+                        <td>
+                            <button class="btn-transparent" style="padding:4px 8px; font-size:10px; display:inline-block; width:auto;" onclick="editProduct(${p.id})"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-transparent" style="padding:4px 8px; font-size:10px; display:inline-block; width:auto; color:var(--accent-rose);" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Load User credentials db table
+            const tbodyUsers = document.getElementById("admin-users-table");
+            tbodyUsers.innerHTML = "";
+            Object.keys(state.users).forEach(u => {
+                tbodyUsers.innerHTML += `<tr><td><b>${u}</b></td><td><code>${state.users[u]}</code></td></tr>`;
+            });
+        }
+
+        function approveOrder(orderId) {
+            const index = state.orders.findIndex(o => o.id === orderId);
+            if (index !== -1) {
+                state.orders[index].status = "DONE";
+                saveToStorage();
+                loadAdminDashboard();
+                alert("Order status updated successfully to DONE!");
+            }
+        }
+
+        function loadAdminChat() {
+            const user = document.getElementById("admin-chat-select").value;
+            const box = document.getElementById("admin-chat-box");
+            box.innerHTML = "";
+            if(!user || !state.chats[user]) return;
+
+            state.chats[user].forEach(m => {
+                const cls = m.sender === 'admin' ? 'user' : 'admin'; // visually reverse positions inside panel workspace
+                box.innerHTML += `<div class="chat-msg ${cls}"><b>${m.sender.toUpperCase()}:</b> ${m.text}</div>`;
+            });
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function sendAdminMessage() {
+            const user = document.getElementById("admin-chat-select").value;
+            const inp = document.getElementById("admin-chat-input");
+            const txt = inp.value.trim();
+            if(!user || !txt) return;
+
+            state.chats[user].push({ sender: 'admin', text: txt });
+            inp.value = "";
+            saveToStorage();
+            loadAdminChat();
+        }
+
+        function saveProduct() {
+            const id = document.getElementById("edit-prod-id").value;
+            const name = document.getElementById("prod-name-input").value;
+            const price = parseInt(document.getElementById("prod-price-input").value);
+            const desc = document.getElementById("prod-desc-input").value;
+
+            if(!name || !price) { alert("Nama & Harga wajib diisi!"); return; }
+
+            if(id) {
+                const idx = state.products.findIndex(p => p.id == id);
+                state.products[idx] = { id: parseInt(id), name, price, desc };
+            } else {
+                state.products.push({ id: Date.now(), name, price, desc });
+            }
+            saveToStorage();
+            clearProductForm();
+            loadAdminDashboard();
+            renderCatalog();
+            alert("Produk berhasil disimpan!");
+        }
+
+        function editProduct(id) {
+            const p = state.products.find(prod => prod.id === id);
+            document.getElementById("edit-prod-id").value = p.id;
+            document.getElementById("prod-name-input").value = p.name;
+            document.getElementById("prod-price-input").value = p.price;
+            document.getElementById("prod-desc-input").value = p.desc;
+        }
+
+        function deleteProduct(id) {
+            if(confirm("Apakah Anda yakin menghapus produk ini?")) {
+                state.products = state.products.filter(p => p.id !== id);
+                saveToStorage();
+                loadAdminDashboard();
+                renderCatalog();
+            }
+        }
+
+        function clearProductForm() {
+            document.getElementById("edit-prod-id").value = "";
+            document.getElementById("prod-name-input").value = "";
+            document.getElementById("prod-price-input").value = "";
+            document.getElementById("prod-desc-input").value = "";
+        }
+
+        function saveSystemConfig() {
+            state.config.title = document.getElementById("sys-title-input").value;
+            state.config.desc = document.getElementById("sys-desc-input").value;
+            saveToStorage();
+            applySystemConfig();
+            alert("Sistem web berhasil dikonfigurasi ulang!");
+        }
+
+        function addNews() {
+            const title = document.getElementById("news-title-input").value;
+            const desc = document.getElementById("news-desc-input").value;
+            if(!title || !desc) return;
+
+            state.news.unshift({ id: Date.now(), title, desc });
+            saveToStorage();
+            renderNews();
+            document.getElementById("news-title-input").value = "";
+            document.getElementById("news-desc-input").value = "";
+            alert("News berhasil dipublikasikan!");
+        }
+    </script>
+</body>
+</html>
